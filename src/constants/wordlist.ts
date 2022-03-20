@@ -5757,3 +5757,7 @@ export const WORDS = [
   'biffy',
   'pupal',
 ]
+
+export const WORDS_8 = [
+  
+]

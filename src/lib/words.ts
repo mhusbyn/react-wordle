@@ -1,14 +1,21 @@
-import { WORDS } from '../constants/wordlist'
-import { VALID_GUESSES } from '../constants/validGuesses'
+// import { WORDS } from '../constants/wordlist'
+// import { VALID_GUESSES } from '../constants/validGuesses'
 import { WRONG_SPOT_MESSAGE, NOT_CONTAINED_MESSAGE } from '../constants/strings'
 import { getGuessStatuses } from './statuses'
 import { default as GraphemeSplitter } from 'grapheme-splitter'
 
-export const isWordInWordList = (word: string) => {
-  return (
-    WORDS.includes(localeAwareLowerCase(word)) ||
-    VALID_GUESSES.includes(localeAwareLowerCase(word))
-  )
+export const isWordInWordList = async (word: string) => {
+  if (word.toLowerCase() === 'kate'){
+    return true
+  }
+  const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
+  return response.ok
+  // const data = await response.json()
+  // console.log(data)
+  // return (
+  //   WORDS.includes(localeAwareLowerCase(word)) ||
+  //   VALID_GUESSES.includes(localeAwareLowerCase(word))
+  // )
 }
 
 export const isWinningWord = (word: string) => {
@@ -74,6 +81,14 @@ export const localeAwareUpperCase = (text: string) => {
     : text.toUpperCase()
 }
 
+export const LEVEL_WORDS = ['HAPPY', 'BIRTHDAY', 'KATE', 'WE', 'ARE', 'GOING', 'TO', 'PARAGLIDE', 'TOGETHER']
+
+export const getLevel = () => {
+  const queryString = require('query-string');
+  const parsed = queryString.parse(window.location.search)
+  return parsed.level ? parseInt(parsed.level) : 0
+}
+
 export const getWordOfDay = () => {
   // January 1, 2022 Game Epoch
   const epochMs = new Date(2022, 0).valueOf()
@@ -82,11 +97,35 @@ export const getWordOfDay = () => {
   const index = Math.floor((now - epochMs) / msInDay)
   const nextday = (index + 1) * msInDay + epochMs
 
+  // const queryString = require('query-string');
+  // const parsed = queryString.parse(window.location.search)
+  // console.log(getWord(parsed.level).solution)
+  // const words = ['HANDS', 'SOARE', 'AROSE']
+  const level = getLevel()
+  const solution = LEVEL_WORDS[level]
+
   return {
-    solution: localeAwareUpperCase(WORDS[index % WORDS.length]),
+    // solution: localeAwareUpperCase(WORDS[index % WORDS.length]),
+    solution: solution,
     solutionIndex: index,
     tomorrow: nextday,
   }
 }
+
+// export const getWord = (level: number) => {
+//   // January 1, 2022 Game Epoch
+//   const epochMs = new Date(2022, 0).valueOf()
+//   const now = Date.now()
+//   const msInDay = 86400000
+//   const index = Math.floor((now - epochMs) / msInDay)
+//   const nextday = (index + 1) * msInDay + epochMs
+
+//   return {
+//     // solution: localeAwareUpperCase(WORDS[index % WORDS.length]),
+//     solution: words[level],
+//     solutionIndex: index,
+//     tomorrow: nextday,
+//   }
+// }
 
 export const { solution, solutionIndex, tomorrow } = getWordOfDay()

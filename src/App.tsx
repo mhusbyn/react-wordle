@@ -25,11 +25,12 @@ import {
   solution,
   findFirstUnusedReveal,
   unicodeLength,
+  // getWord,
 } from './lib/words'
 import { addStatsForCompletedGame, loadStats } from './lib/stats'
 import {
   loadGameStateFromLocalStorage,
-  saveGameStateToLocalStorage,
+  // saveGameStateToLocalStorage,
   setStoredIsHighContrastMode,
   getStoredIsHighContrastMode,
 } from './lib/localStorage'
@@ -41,6 +42,12 @@ import { useAlert } from './context/AlertContext'
 import { Navbar } from './components/navbar/Navbar'
 
 function App() {
+  // const queryString = require('query-string');
+  // const parsed = queryString.parse(window.location.search)
+  // // console.log(getWord(parsed.level).solution)
+  // const solution = getWord(parsed.level).solution
+  // console.log(solution)
+
   const prefersDarkMode = window.matchMedia(
     '(prefers-color-scheme: dark)'
   ).matches
@@ -139,7 +146,8 @@ function App() {
   }
 
   useEffect(() => {
-    saveGameStateToLocalStorage({ guesses, solution })
+    return
+    // saveGameStateToLocalStorage({ guesses, solution })
   }, [guesses])
 
   useEffect(() => {
@@ -177,7 +185,7 @@ function App() {
     )
   }
 
-  const onEnter = () => {
+  const onEnter = async () => {
     if (isGameWon || isGameLost) {
       return
     }
@@ -189,7 +197,9 @@ function App() {
       })
     }
 
-    if (!isWordInWordList(currentGuess)) {
+    const isInWordList = await isWordInWordList(currentGuess)
+    // if (!isWordInWordList(currentGuess)) {
+    if (!isInWordList) {
       setCurrentRowClass('jiggle')
       return showErrorAlert(WORD_NOT_FOUND_MESSAGE, {
         onClose: clearCurrentRowClass,
@@ -232,10 +242,10 @@ function App() {
       if (guesses.length === MAX_CHALLENGES - 1) {
         setStats(addStatsForCompletedGame(stats, guesses.length + 1))
         setIsGameLost(true)
-        showErrorAlert(CORRECT_WORD_MESSAGE(solution), {
-          persist: true,
-          delayMs: REVEAL_TIME_MS * MAX_WORD_LENGTH + 1,
-        })
+        // showErrorAlert(CORRECT_WORD_MESSAGE(solution), {
+        //   persist: true,
+        //   delayMs: REVEAL_TIME_MS * MAX_WORD_LENGTH + 1,
+        // })
       }
     }
   }

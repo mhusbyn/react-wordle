@@ -7,10 +7,12 @@ type StoredGameState = {
 }
 
 export const saveGameStateToLocalStorage = (gameState: StoredGameState) => {
+  // return
   localStorage.setItem(gameStateKey, JSON.stringify(gameState))
 }
 
 export const loadGameStateFromLocalStorage = () => {
+  // return null
   const state = localStorage.getItem(gameStateKey)
   return state ? (JSON.parse(state) as StoredGameState) : null
 }
